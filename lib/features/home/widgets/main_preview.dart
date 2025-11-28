@@ -36,6 +36,13 @@ class MainPreview extends StatelessWidget {
 
   bool get _showOriginal => selectedImageIndex == -1 && selectedImage != null;
 
+  double get _containerHeight {
+    if (selectedImage == null && generatedImages.isEmpty) {
+      return 260.h;
+    }
+    return 410.h;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -44,8 +51,10 @@ class MainPreview extends StatelessWidget {
           opacity: generatedImages.isNotEmpty
               ? fadeAnimation
               : const AlwaysStoppedAnimation(1.0),
-          child: Container(
-            height: 350.h,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            height: _containerHeight,
             width: double.infinity,
             decoration: BoxDecoration(
               color: AppColors.surface,
@@ -62,7 +71,8 @@ class MainPreview extends StatelessWidget {
             child: _buildContent(),
           ),
         ),
-        if (generatedImages.isNotEmpty) _buildResetButton(),
+        if (generatedImages.isNotEmpty || selectedImage != null)
+          _buildResetButton(),
       ],
     );
   }

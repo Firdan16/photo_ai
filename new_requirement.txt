@@ -1,0 +1,13 @@
+To make sure everything fits the real purpose of the app, here are the points that need to be adjusted:
+
+1. Switch the focus from nature scenes to Instagram-style concepts
+The app is meant for generating casual Instagram-like photos of a person. Not landscapes and not professional studio shoots. Think of everyday social media vibes like cafe aesthetics, mirror selfies, rooftop shots, travel moments, street style, gym looks, and casual portraits.
+
+2. Introduce pre-selectable scenes
+The main idea is that users can pick from ready themes that match those Instagram concepts. These scenes should feel like realistic settings a person would normally post.
+
+3. Keep the custom prompt option
+Custom prompts are fine to keep as an alternative input. They just shouldn’t be the primary feature. The Focus is on selecting Scenes/themes (e.g. cafe shots, rooftop moments, gym fits, mirror selfies, street style).
+
+4. Adjust the generation prompt style
+The output should look like a casual Instagram photo taken on a phone. Not overly polished, not commercial photography. More natural, candid, and social media friendly.

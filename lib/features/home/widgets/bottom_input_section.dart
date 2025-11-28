@@ -9,7 +9,10 @@ class BottomInputSection extends StatelessWidget {
   final TextEditingController promptController;
   final int sampleCount;
   final bool isGenerating;
+  final bool showInput;
+  final int styleCount;
   final VoidCallback onSettingsTap;
+  final VoidCallback onStyleTap;
   final VoidCallback onGenerateTap;
 
   const BottomInputSection({
@@ -17,12 +20,23 @@ class BottomInputSection extends StatelessWidget {
     required this.promptController,
     required this.sampleCount,
     required this.isGenerating,
+    this.showInput = false,
+    this.styleCount = 0,
     required this.onSettingsTap,
+    required this.onStyleTap,
     required this.onGenerateTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+      child: showInput ? _buildContent() : const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildContent() {
     return Container(
       padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 32.h),
       decoration: BoxDecoration(
@@ -30,9 +44,9 @@ class BottomInputSection extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 24,
+            offset: const Offset(0, -8),
           ),
         ],
       ),
@@ -53,12 +67,16 @@ class BottomInputSection extends StatelessWidget {
   Widget _buildPromptInput() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(
-          color: AppColors.border.withValues(alpha: 0.5),
-          width: 1,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: Colors.black, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: TextField(
         controller: promptController,
@@ -67,15 +85,20 @@ class BottomInputSection extends StatelessWidget {
         style: TextStyle(
           fontSize: 16.sp,
           color: AppColors.textPrimary,
-          height: 1.3,
+          height: 1.4,
+          fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
-          hintText: 'Describe the image you want to create...',
-          hintStyle: TextStyle(color: AppColors.textTertiary, fontSize: 16.sp),
+          hintText: 'Add details about what you want (optional)',
+          hintStyle: TextStyle(
+            color: AppColors.textTertiary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+          ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20.w,
-            vertical: 18.h,
+            vertical: 16.h,
           ),
         ),
       ),
@@ -86,7 +109,9 @@ class BottomInputSection extends StatelessWidget {
     return Row(
       children: [
         _buildSettingsButton(),
-        SizedBox(width: 16.w),
+        SizedBox(width: 12.w),
+        _buildStyleButton(),
+        SizedBox(width: 12.w),
         Expanded(child: _buildGenerateButton()),
       ],
     );
@@ -107,14 +132,41 @@ class BottomInputSection extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Icon(Icons.tune_rounded, size: 24.sp, color: AppColors.textPrimary),
-            Positioned(top: 8.h, right: 8.w, child: _buildBadge()),
+            Positioned(top: 8.h, right: 8.w, child: _buildBadge(sampleCount)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBadge() {
+  Widget _buildStyleButton() {
+    return ScaleOnTap(
+      onTap: onStyleTap,
+      child: Container(
+        width: 56.w,
+        height: 56.h,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.border, width: 1),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Icon(
+              Icons.palette_outlined,
+              size: 24.sp,
+              color: AppColors.textPrimary,
+            ),
+            if (styleCount > 0)
+              Positioned(top: 8.h, right: 8.w, child: _buildBadge(styleCount)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadge(int count) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       width: 18.w,
@@ -125,7 +177,7 @@ class BottomInputSection extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          '$sampleCount',
+          '$count',
           style: TextStyle(
             fontSize: 10.sp,
             fontWeight: FontWeight.w700,
@@ -144,15 +196,11 @@ class BottomInputSection extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         height: 56.h,
         decoration: BoxDecoration(
-          color: isGenerating
-              ? AppColors.primary.withValues(alpha: 0.7)
-              : AppColors.primary,
+          color: Colors.black,
           borderRadius: BorderRadius.circular(28.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(
-                alpha: isGenerating ? 0.1 : 0.2,
-              ),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
